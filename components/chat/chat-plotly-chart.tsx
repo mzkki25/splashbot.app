@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState, useCallback } from "react"
 import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
+import { useIsMobile } from "@/hooks/useMobile"
 import { Download, Loader2, AlertCircle, RefreshCw } from "lucide-react"
 
 interface PlotlyChartProps {
@@ -18,6 +19,8 @@ export default function PlotlyChart({ url }: PlotlyChartProps) {
   const [retryCount, setRetryCount] = useState(0)
   const [containerReady, setContainerReady] = useState(false)
   const mountedRef = useRef(true)
+  const isMobile = useIsMobile()
+
   useEffect(() => {
     mountedRef.current = true
     return () => {
@@ -220,7 +223,7 @@ export default function PlotlyChart({ url }: PlotlyChartProps) {
         </div>
         <p className="text-sm text-red-600 dark:text-red-400 mb-3">{error}</p>
         {retryCount > 0 && <p className="text-xs text-red-500 mb-3">Retry attempts: {retryCount}</p>}
-        <div className="flex gap-2">
+        <div className={!isMobile ? "flex gap-2" : "flex flex-col gap-2"}>
           <Button variant="outline" size="sm" onClick={handleRetry} className="flex items-center gap-2">
             <RefreshCw className="h-4 w-4" />
             Retry
@@ -242,7 +245,7 @@ export default function PlotlyChart({ url }: PlotlyChartProps) {
   return (
     <Card className="p-4 my-4 border-gray-200 bg-white dark:bg-gray-800 dark:border-gray-700">
       <div className="flex items-center justify-between mb-4">
-        <div className="flex gap-2">
+        <div className={!isMobile ? "flex gap-2" : "flex flex-col gap-2"}>
           {plotlyData && !isLoading && (
             <Button variant="outline" size="sm" onClick={handleDownload} className="flex items-center gap-2">
               <Download className="h-4 w-4" />
