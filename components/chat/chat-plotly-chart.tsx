@@ -173,17 +173,16 @@ export default function PlotlyChart({ url }: PlotlyChartProps) {
   }, [plotlyData, plotlyLib, containerReady, createChart])
 
   const handleDownload = async () => {
-
-  if (plotRef.current) {
-    await plotlyLib.downloadImage(plotRef.current, {
-      format: "png",
-      filename: `chart-${Date.now()}`,
-      width: 800,
-      height: 600,
-      scale: 1,
-    })
+    if (plotRef.current) {
+      await plotlyLib.downloadImage(plotRef.current, {
+        format: "png",
+        filename: `chart-${Date.now()}`,
+        width: 800,
+        height: 600,
+        scale: 1,
+      })
+    }
   }
-}
 
   const handleRetry = () => {
     setRetryCount((prev) => prev + 1)
@@ -241,7 +240,7 @@ export default function PlotlyChart({ url }: PlotlyChartProps) {
   }
 
   return (
-    <Card className="p-4 my-4">
+    <Card className="p-4 my-4 border-gray-200 bg-white dark:bg-gray-800 dark:border-gray-700">
       <div className="flex items-center justify-between mb-4">
         <div className="flex gap-2">
           {plotlyData && !isLoading && (

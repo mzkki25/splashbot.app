@@ -12,6 +12,7 @@ import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { handleLogin } from "@/lib/auth"
 import { useStore } from "@/lib/store/useStore"
+import { generateChatSessionId } from "@/lib/auth"
 import AuthFormError from "@/components/handler/auth-form-error"
 
 export default function LoginPage() {
@@ -61,7 +62,7 @@ export default function LoginPage() {
         description: "Welcome back to SPLASHBot!",
       })
 
-      router.push("/chat")
+      router.push("/chat?id=" + generateChatSessionId())
     } catch (error: any) {
       console.error("Login error:", error)
 
