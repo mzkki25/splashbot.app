@@ -15,11 +15,11 @@ import ChatInputForm from "./chat-input-form"
 const CHAT_OPTIONS = [
   { label: "General Macroeconomics", value: "General Macroeconomics", disabled: false },
   { label: "2 Wheels", value: "2 Wheels", disabled: false },
-  { label: "4 Wheels", value: "4 Wheels", disabled: true },
-  { label: "Retail General", value: "Retail General", disabled: true },
-  { label: "Retail Beauty", value: "Retail Beauty", disabled: true },
-  { label: "Retail FnB", value: "Retail FnB", disabled: true },
-  { label: "Retail Drugstore", value: "Retail Drugstore", disabled: true },
+  { label: "4 Wheels", value: "4 Wheels", disabled: false },
+  { label: "Retail General", value: "Retail General", disabled: false },
+  { label: "Retail Beauty", value: "Retail Beauty", disabled: false },
+  { label: "Retail FnB", value: "Retail FnB", disabled: false },
+  { label: "Retail Drugstore", value: "Retail Drugstore", disabled: false },
 ]
 
 interface ChatInputProps {
