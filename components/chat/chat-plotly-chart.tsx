@@ -118,6 +118,26 @@ export default function PlotlyChart({ url }: PlotlyChartProps) {
         plotlyData.data,
         {
           ...plotlyData.layout,
+          title: {
+            text: (() => {
+              if (isMobile) {
+                return "";
+              }
+              
+              const fullText = plotlyData.layout.title?.text || "";
+              const words = fullText.split(/\s+/); 
+              const maxLength = 6;
+              if (words.length > maxLength) {
+                return (
+                  words.slice(0, maxLength).join(" ") + "<br>" + words.slice(maxLength).join(" ")
+                );
+              } else {
+                return fullText;
+              }
+            })()
+          },
+          width: container.offsetWidth,
+          height: container.offsetHeight,
           autosize: true,
           responsive: true,
         },
