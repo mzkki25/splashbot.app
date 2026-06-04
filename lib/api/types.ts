@@ -48,11 +48,3 @@ export interface AuthResponse {
   token?: string
   expires_in?: number
 }
-
-export interface TokenExchangeResponse {
-  kind: string
-  idToken: string
-  refreshToken: string
-  expiresIn: string
-  isNewUser: boolean
-}

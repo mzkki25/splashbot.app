@@ -1,6 +1,5 @@
-import { AuthResponse, TokenExchangeResponse } from "./types"
+import { AuthResponse } from "./types"
 
-const FIREBASE_API_KEY = process.env.NEXT_PUBLIC_FIREBASE_API
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE
 
 export const authApi = {
@@ -53,37 +52,6 @@ export const authApi = {
       }
     } catch (error) {
       console.error("Login error:", error)
-      throw error
-    }
-  },
-
-  exchangeToken: async (customToken: string): Promise<TokenExchangeResponse> => {
-    try {
-      console.log("Exchanging token:", customToken)
-      const response = await fetch(
-        `https://identitytoolkit.googleapis.com/v1/accounts:signInWithCustomToken?key=${FIREBASE_API_KEY}`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            token: customToken,
-            returnSecureToken: true,
-          }),
-        },
-      )
-
-      const data = await response.json()
-
-      if (response.status === 200) {
-        return data
-      } else {
-        console.error("Token exchange failed:", data)
-        throw new Error(data.error?.message || "Token exchange failed")
-      }
-    } catch (error) {
-      console.error("Token exchange error:", error)
       throw error
     }
   },
