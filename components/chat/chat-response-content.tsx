@@ -10,6 +10,7 @@ import PlotlyChart from "./chat-plotly-chart"
 interface ChatResponseContentProps {
   content: string
   result?: string | null
+  chartJson?: Record<string, any> | null
 }
 
 const isPlotlyJsonUrl = (url: string): boolean => {
@@ -17,15 +18,18 @@ const isPlotlyJsonUrl = (url: string): boolean => {
     const urlObj = new URL(url)
     return (
       urlObj.pathname.endsWith(".json") &&
-      (urlObj.hostname.includes("googleapis.com") || urlObj.hostname.includes("firebasestorage.app"))
+      (urlObj.hostname.includes("googleapis.com") ||
+       urlObj.hostname.includes("firebasestorage.app") ||
+       urlObj.hostname === "localhost" ||
+       urlObj.hostname === "127.0.0.1")
     )
   } catch {
-    return false
+    return url.startsWith("/static/upload/") && url.endsWith(".json")
   }
 }
 
-export default function ChatResponseContent({ content, result }: ChatResponseContentProps) {
-  const shouldShowChart = result && isPlotlyJsonUrl(result)
+export default function ChatResponseContent({ content, result, chartJson }: ChatResponseContentProps) {
+  const shouldShowChart = (result && isPlotlyJsonUrl(result)) || !!chartJson
 
   return (
     <div className="w-full break-words">
@@ -66,7 +70,7 @@ export default function ChatResponseContent({ content, result }: ChatResponseCon
       </div>
 
       {/* Plotly Chart */}
-      {shouldShowChart && <PlotlyChart url={result}/>}
+      {shouldShowChart && <PlotlyChart url={result} data={chartJson} />}
 
       {/* Non-chart result content */}
       {result && !shouldShowChart && (

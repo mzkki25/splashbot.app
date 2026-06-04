@@ -9,23 +9,35 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: "URL parameter is required" }, { status: 400 })
     }
 
-    const allowedDomains = ["storage.googleapis.com", "firebasestorage.app", "adi-internship-2.firebasestorage.app"]
+    const allowedDomains = [
+      "storage.googleapis.com",
+      "firebasestorage.app",
+      "adi-internship-2.firebasestorage.app",
+      "localhost",
+      "127.0.0.1",
+    ]
 
     let isValidDomain = false
+    let fetchUrl = url
+
     try {
       const urlObj = new URL(url)
       isValidDomain = allowedDomains.some(
         (domain) => urlObj.hostname === domain || urlObj.hostname.endsWith(`.${domain}`),
       )
     } catch {
-      return NextResponse.json({ error: "Invalid URL format" }, { status: 400 })
+      if (url.startsWith("/static/")) {
+        isValidDomain = true
+        const base = (process.env.NEXT_PUBLIC_API_BASE || "http://localhost:8000").replace(/\/+$/, "")
+        fetchUrl = `${base}${url}`
+      }
     }
 
     if (!isValidDomain) {
       return NextResponse.json({ error: "URL not from allowed domain" }, { status: 403 })
     }
 
-    const response = await fetch(url, {
+    const response = await fetch(fetchUrl, {
       headers: {
         "User-Agent": "SPLASHBot/1.0",
       },

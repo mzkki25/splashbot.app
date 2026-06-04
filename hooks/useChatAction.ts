@@ -108,7 +108,7 @@ export function useChatActions({ setInput, setIsMobileMenuOpen }: UseChatActions
       const response = await chatApi.sendChatMessage(chatSessionId, chatRequest, idToken)
 
       let responseContent: string
-      let resultData: string | null = null
+      let resultData: any = null
 
       if (typeof response.response === "object" && response.response !== null && "explanation" in response.response) {
         responseContent = response.response.explanation
@@ -125,7 +125,8 @@ export function useChatActions({ setInput, setIsMobileMenuOpen }: UseChatActions
         timestamp: new Date().toISOString(),
         references: response.references || [],
         follow_up_question: response.follow_up_question || [],
-        result: resultData, 
+        result: typeof resultData === "string" ? resultData : null,
+        chart_json: typeof resultData === "object" ? resultData : null,
       }
 
       addMessage(botResponse)

@@ -99,7 +99,7 @@ export const clearAuthData = () => {
   }
 }
 
-// Handle login process including token exchange
+// Handle login process (JWT-based, no Firebase token exchange)
 export const handleLogin = async (emailOrUsername: string, password: string) => {
   const loginResponse = await authApi.login(emailOrUsername, password)
 
@@ -109,27 +109,19 @@ export const handleLogin = async (emailOrUsername: string, password: string) => 
     throw new Error("Login failed: Invalid response from server")
   }
 
-  try {
-    const tokenExchange = await authApi.exchangeToken(loginResponse.token)
-    console.log("Token exchange successful:", tokenExchange)
+  const expiresIn = loginResponse.expires_in ? String(loginResponse.expires_in) : "86400"
 
-    storeAuthData(
-      loginResponse.user_id,
-      loginResponse.token,
-      tokenExchange.idToken,
-      tokenExchange.refreshToken,
-      tokenExchange.expiresIn,
-    )
+  storeAuthData(
+    loginResponse.user_id,
+    loginResponse.token,
+    loginResponse.token,
+    loginResponse.token,
+    expiresIn,
+  )
 
-    await new Promise((resolve) => setTimeout(resolve, 2000))
-
-    return {
-      userId: loginResponse.user_id,
-      idToken: tokenExchange.idToken,
-    }
-  } catch (error) {
-    console.error("Token exchange failed:", error)
-    throw new Error("Authentication failed during token exchange")
+  return {
+    userId: loginResponse.user_id,
+    idToken: loginResponse.token,
   }
 }
 

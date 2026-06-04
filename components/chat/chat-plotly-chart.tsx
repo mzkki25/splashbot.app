@@ -7,10 +7,11 @@ import { useIsMobile } from "@/hooks/useMobile"
 import { Download, Loader2, AlertCircle, RefreshCw } from "lucide-react"
 
 interface PlotlyChartProps {
-  url: string
+  url?: string | null
+  data?: Record<string, any> | null
 }
 
-export default function PlotlyChart({ url }: PlotlyChartProps) {
+export default function PlotlyChart({ url, data }: PlotlyChartProps) {
   const plotRef = useRef<HTMLDivElement>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -60,11 +61,22 @@ export default function PlotlyChart({ url }: PlotlyChartProps) {
 
   const loadPlotlyData = async () => {
     try {
-      console.log("Loading Plotly` library and data...")
+      console.log("Loading Plotly library and data...")
 
       const Plotly = await import("plotly.js-dist-min")
       if (!mountedRef.current) return
       setPlotlyLib(Plotly)
+
+      if (data) {
+        console.log("Using inline chart data")
+        setPlotlyData(data)
+        setIsLoading(false)
+        return
+      }
+
+      if (!url) {
+        throw new Error("No chart URL or data provided")
+      }
 
       const proxyUrl = `/api/plotly-proxy?url=${encodeURIComponent(url)}`
       const response = await fetch(proxyUrl)
@@ -184,10 +196,10 @@ export default function PlotlyChart({ url }: PlotlyChartProps) {
   }, [plotlyData, plotlyLib, containerReady])
 
   useEffect(() => {
-    if (url) {
+    if (url || data) {
       loadPlotlyData()
     }
-  }, [url])
+  }, [url, data])
 
   useEffect(() => {
     if (plotlyData && plotlyLib && containerReady) {
@@ -272,10 +284,6 @@ export default function PlotlyChart({ url }: PlotlyChartProps) {
               Download Image
             </Button>
           )}
-          <Button variant="outline" size="sm" onClick={handleRetry} className="flex items-center gap-2">
-            <RefreshCw className="h-4 w-4" />
-            Refresh
-          </Button>
         </div>
       </div>
 

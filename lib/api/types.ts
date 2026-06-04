@@ -39,12 +39,14 @@ export interface ChatMessage {
   timestamp: string
   references?: string[]
   result?: string | null
+  chart_json?: Record<string, any> | null
 }
 
 export interface AuthResponse {
   success: boolean
   user_id?: string
   token?: string
+  expires_in?: number
 }
 
 export interface TokenExchangeResponse {

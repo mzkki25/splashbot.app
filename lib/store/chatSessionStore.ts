@@ -22,7 +22,8 @@ export interface ChatMessage {
   }
   references?: string[]
   follow_up_question?: string[]
-  result?: string | null // Add result field for API response
+  result?: string | null
+  chart_json?: Record<string, any> | null
 }
 
 export interface ChatSession {
@@ -181,6 +182,7 @@ export const createChatSessionSlice: StateCreator<
           file: msg.file_id ? { id: msg.file_id } : undefined,
           references: msg.references || [],
           result: result,
+          chart_json: msg.chart_json || null,
         }
       })
 

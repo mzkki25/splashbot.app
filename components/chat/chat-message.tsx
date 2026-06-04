@@ -65,7 +65,7 @@ const ChatMessage = memo(function ChatMessage({ message, onFollowUpQuestionClick
             {isUser ? (
               <div className="whitespace-pre-wrap">{message.content}</div>
             ) : (
-              <ChatResponseContent content={message.content} result={message.result} />
+              <ChatResponseContent content={message.content} result={message.result} chartJson={message.chart_json} />
             )}
 
             {/* References section - Improved for mobile */}
