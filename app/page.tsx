@@ -46,22 +46,22 @@ export default function Home() {
 
       <main className="flex-1">
         {/* Hero */}
-        <section className="relative pt-24 pb-16 sm:pt-32 sm:pb-20">
+        <section className="relative pt-20 pb-12 sm:pt-28 sm:pb-16">
           <div className="absolute inset-0 -z-10 bg-[radial-gradient(45%_40%_at_50%_30%,rgba(59,130,246,0.08),transparent)] dark:bg-[radial-gradient(45%_40%_at_50%_30%,rgba(59,130,246,0.12),transparent)]" />
           <div className="max-w-3xl mx-auto px-4 sm:px-6 text-center">
-            <div className="inline-flex items-center gap-2 rounded-full border border-blue-200 dark:border-blue-800 bg-blue-50 dark:bg-blue-950 px-4 py-1.5 text-sm font-medium text-blue-700 dark:text-blue-300 mb-8">
-              <Sparkles className="h-4 w-4" />
+            <div className="inline-flex items-center gap-2 rounded-full border border-blue-200 dark:border-blue-800 bg-blue-50 dark:bg-blue-950 px-3 py-1 text-xs font-medium text-blue-700 dark:text-blue-300 mb-6">
+              <Sparkles className="h-3.5 w-3.5" />
               Powered by Gemini
             </div>
 
-            <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight text-gray-900 dark:text-white leading-[1.1]">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-gray-900 dark:text-white leading-[1.15]">
               Understand the economy
-              <span className="block mt-3 bg-gradient-to-r from-blue-600 to-violet-500 bg-clip-text text-transparent">
+              <span className="block mt-2 bg-gradient-to-r from-blue-600 to-violet-500 bg-clip-text text-transparent">
                 with AI-powered insights
               </span>
             </h1>
 
-            <p className="mt-6 text-lg leading-relaxed text-gray-500 dark:text-gray-400 max-w-xl mx-auto">
+            <p className="mt-5 text-base leading-relaxed text-gray-500 dark:text-gray-400 max-w-lg mx-auto">
               SPLASHBot analyzes sales trends, retail data, and macroeconomic indicators across Indonesia.
               Ask anything, get data-backed answers instantly.
             </p>
@@ -79,7 +79,7 @@ export default function Home() {
             </div>
 
             {/* Stats */}
-            <div className="mt-20 grid grid-cols-2 sm:grid-cols-4 gap-8 border-t border-gray-100 dark:border-gray-800 pt-12">
+            <div className="mt-16 grid grid-cols-2 sm:grid-cols-4 gap-6 border-t border-gray-100 dark:border-gray-800 pt-10">
               {[
                 { value: "7", label: "Data domains" },
                 { value: "100K+", label: "Data points" },
@@ -87,8 +87,8 @@ export default function Home() {
                 { value: "Real-time", label: "AI analysis" },
               ].map((s) => (
                 <div key={s.label} className="text-center">
-                  <div className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tabular-nums">{s.value}</div>
-                  <div className="mt-1 text-sm text-gray-400 dark:text-gray-500">{s.label}</div>
+                  <div className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white tabular-nums">{s.value}</div>
+                  <div className="mt-1 text-xs text-gray-400 dark:text-gray-500">{s.label}</div>
                 </div>
               ))}
             </div>
