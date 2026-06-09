@@ -2,41 +2,23 @@
 
 import { Avatar } from "@/components/ui/avatar"
 import { Card } from "@/components/ui/card"
-import { FileText, ImageIcon, ExternalLink, Bot, User } from "lucide-react"
+import { FileText, ImageIcon, Bot, User } from "lucide-react"
 import { formatDistanceToNow } from "date-fns"
 import SafeClientOnly from "@/components/handler/safe-client-only"
 import FollowUpQuestions from "@/components/chat/chat-follow-up-question"
 import ChatResponseContent from "./chat-response-content"
+import ReferenceCards from "./chat-reference-cards"
 import type { ChatMessage as ChatMessageType } from "@/lib/store/chatSessionStore"
 import { memo } from "react"
-import { useIsMobile } from "@/hooks/useMobile"
 
 interface ChatMessageProps {
   message: ChatMessageType
   onFollowUpQuestionClick?: (question: string) => void
 }
 
-const formatUrl = (url: string, isMobile: boolean): string => {
-  try {
-    const urlObj = new URL(url)
-    if (isMobile) {
-      const path = urlObj.pathname.length > 15 ? urlObj.pathname.substring(0, 15) + "..." : urlObj.pathname
-      return `${urlObj.hostname}${path}`
-    } else {
-      if (url.length > 100) {
-        return url.substring(0, 100) + "..."
-      }
-      return url
-    }
-  } catch (e) {
-    return isMobile ? url.substring(0, 15) + "..." : url
-  }
-}
-
 const ChatMessage = memo(function ChatMessage({ message, onFollowUpQuestionClick }: ChatMessageProps) {
   const isUser = message.role === "user"
   const isSystem = message.role === "system"
-  const isMobile = useIsMobile()
 
   return (
     <div className={`flex ${isUser ? "justify-end" : "justify-start"} dark:bg-gray-900`} data-role={message.role}>
@@ -68,27 +50,9 @@ const ChatMessage = memo(function ChatMessage({ message, onFollowUpQuestionClick
               <ChatResponseContent content={message.content} result={message.result} chartJson={message.chart_json} />
             )}
 
-            {/* References section - Improved for mobile */}
+            {/* References section - Card style */}
             {message.references && message.references.length > 0 && (
-              <div className="mt-3 pt-2 border-t border-gray-200 dark:border-gray-700">
-                <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">References:</p>
-                <div className={`${isMobile ? "grid grid-cols-1 gap-1" : "space-y-1"}`}>
-                  {message.references.map((ref, index) => (
-                    <div key={index} className="flex items-start">
-                      <ExternalLink className="h-3 w-3 mt-0.5 mr-1 inline flex-shrink-0 text-blue-500" />
-                      <a
-                        href={ref}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-xs text-blue-600 dark:text-blue-400 hover:underline overflow-hidden text-ellipsis"
-                        title={ref}
-                      >
-                        {formatUrl(ref, isMobile)}
-                      </a>
-                    </div>
-                  ))}
-                </div>
-              </div>
+              <ReferenceCards references={message.references} />
             )}
 
             {/* Follow-up questions section */}

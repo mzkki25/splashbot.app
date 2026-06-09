@@ -16,9 +16,10 @@ import {
 interface UseChatActionsProps {
   setInput?: (input: string) => void
   setIsMobileMenuOpen?: (isOpen: boolean) => void
+  setChatError?: (error: string | null) => void
 }
 
-export function useChatActions({ setInput, setIsMobileMenuOpen }: UseChatActionsProps = {}) {
+export function useChatActions({ setInput, setIsMobileMenuOpen, setChatError }: UseChatActionsProps = {}) {
   const router = useRouter()
   const { toast } = useToast()
 
@@ -134,12 +135,17 @@ export function useChatActions({ setInput, setIsMobileMenuOpen }: UseChatActions
       loadChatHistoryData()
     } catch (error: any) {
       console.error("Chat error:", error)
+      const errorMsg = error?.message || "Failed to send message. Please try again."
 
-      toast({
-        title: "Error",
-        description: "Failed to send message. Please try again.",
-        variant: "destructive",
-      })
+      if (setChatError) {
+        setChatError(errorMsg)
+      } else {
+        toast({
+          title: "Error",
+          description: errorMsg,
+          variant: "destructive",
+        })
+      }
     } finally {
       setIsLoading(false)
     }

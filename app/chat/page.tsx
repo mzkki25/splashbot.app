@@ -4,7 +4,6 @@ import { useEffect, useRef, useState } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import { useToast } from "@/components/ui/use-toast"
 import { Sheet, SheetContent } from "@/components/ui/sheet"
-import { Menu } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { useStore } from "@/lib/store/useStore"
@@ -15,18 +14,24 @@ import ChatSidebar from "@/components/chat/chat-sidebar"
 import ChatHeader from "@/components/chat/chat-header"
 import ChatInput from "@/components/chat/chat-input"
 import ChatMessage from "@/components/chat/chat-message"
+import ChatLoadingSkeleton from "@/components/chat/chat-loading-skeleton"
+import ChatTypingIndicator from "@/components/chat/chat-typing-indicator"
+import ChatErrorMessage from "@/components/chat/chat-error-message"
 import InitialQuestions from "@/components/chat/chat-initial-questions"
 
 import { useChatActions } from "@/hooks/useChatAction"
 import { useInitialQuestions } from "@/hooks/useInitialQuestions"
 import { useWelcomePopup } from "@/hooks/useWelcomePopup"
+import ChatEmptyState from "@/components/chat/chat-empty-state"
 
 export default function ChatPage() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true)
   const [initialLoadComplete, setInitialLoadComplete] = useState(false)
   const [isScrolling, setIsScrolling] = useState(false)
   const [inputValue, setInputValue] = useState("")
   const [shouldFetchQuestions, setShouldFetchQuestions] = useState(false)
+  const [chatError, setChatError] = useState<string | null>(null)
 
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const scrollAreaRef = useRef<HTMLDivElement>(null)
@@ -51,6 +56,9 @@ export default function ChatPage() {
 
   const { initialQuestions, isLoadingQuestions } = useInitialQuestions(chatOption, shouldFetchQuestions)
 
+  const showEmptyState =
+    currentChat?.messages.length === 1 && currentChat.messages[0].role === "system" && !isLoading && !initialQuestions.length && !isLoadingQuestions
+
   const {
     handleDeleteChat,
     handleClearAllChats,
@@ -59,7 +67,7 @@ export default function ChatPage() {
     handleFollowUpQuestionClick,
     loadChatHistoryData,
     handleSendMessage,
-  } = useChatActions({ setInput: setInputValue, setIsMobileMenuOpen })
+  } = useChatActions({ setInput: setInputValue, setIsMobileMenuOpen, setChatError })
 
   useEffect(() => {
     const chatId = searchParams.get("id")
@@ -153,17 +161,6 @@ export default function ChatPage() {
     <div className="flex h-screen bg-gray-50 dark:bg-gray-900">
       <WelcomePopup isOpen={isWelcomePopupOpen} onClose={closeWelcomePopup} />
 
-      {/* Mobile menu button */}
-      <Button
-        variant="ghost"
-        size="icon"
-        className="fixed top-4 left-4 z-50 md:hidden"
-        onClick={() => setIsMobileMenuOpen(true)}
-        aria-label="Open menu"
-      >
-        <Menu className="h-6 w-6" />
-      </Button>
-
       {/* Mobile sidebar */}
       <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
         <SheetContent side="left" className="p-0 w-[280px]" showClose={false}>
@@ -179,7 +176,11 @@ export default function ChatPage() {
       </Sheet>
 
       {/* Desktop sidebar */}
-      <div className="hidden md:block w-[280px] border-r bg-white dark:bg-gray-800 dark:border-gray-700">
+      <div
+        className={`hidden md:block border-r bg-white dark:bg-gray-800 dark:border-gray-700 transition-all duration-300 overflow-hidden ${
+          isSidebarOpen ? "w-[280px]" : "w-0"
+        }`}
+      >
         <ChatSidebar
           chatHistory={chatHistory}
           onDeleteChat={handleDeleteChat}
@@ -190,8 +191,12 @@ export default function ChatPage() {
       </div>
 
       {/* Main chat area */}
-      <div className="flex-1 flex flex-col">
-        <ChatHeader onLogout={handleLogout} />
+      <div className="flex-1 flex flex-col min-w-0">
+        <ChatHeader
+          onLogout={handleLogout}
+          onToggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)}
+          isSidebarOpen={isSidebarOpen}
+        />
 
         <main className="flex-1 overflow-hidden flex flex-col">
           {/* Messages area */}
@@ -201,6 +206,22 @@ export default function ChatPage() {
                 <ChatMessage key={message.id} message={message} onFollowUpQuestionClick={handleFollowUpQuestionClick} />
               ))}
 
+              {isLoading && <ChatTypingIndicator />}
+
+              {chatError && !isLoading && (
+                <ChatErrorMessage
+                  error={chatError}
+                  onRetry={() => {
+                    setChatError(null)
+                    const lastUserMsg = currentChat?.messages.filter(m => m.role === "user").pop()
+                    if (lastUserMsg) {
+                      setInputValue(lastUserMsg.content)
+                      handleSendMessage(lastUserMsg.content)
+                    }
+                  }}
+                />
+              )}
+
               {/* Show initial questions if this is a new chat */}
               {showInitialQuestions && (
                 <InitialQuestions
@@ -208,6 +229,11 @@ export default function ChatPage() {
                   onQuestionClick={handleInitialQuestionClick}
                   isLoading={isLoadingQuestions}
                 />
+              )}
+
+              {/* Empty state when no initial questions loaded yet */}
+              {showEmptyState && (
+                <ChatEmptyState onStartQuestion={handleInitialQuestionClick} />
               )}
 
               <div ref={messagesEndRef} />

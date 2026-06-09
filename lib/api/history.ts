@@ -44,4 +44,22 @@ export const historyApi = {
       throw error
     }
   },
+
+  renameChat: async (chatId: string, title: string, token: string): Promise<{ success: boolean }> => {
+    try {
+      const res = await fetch(`${API_BASE_URL}/history/${chatId}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ title }),
+      })
+      if (!res.ok) throw new Error(await res.text())
+      return await res.json()
+    } catch (error) {
+      if (await handleTokenTimingError(error)) return historyApi.renameChat(chatId, title, token)
+      throw error
+    }
+  },
 }
