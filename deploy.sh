@@ -32,12 +32,8 @@ if [ ! -f ".env.local" ]; then
     echo -e "${YELLOW}Peringatan: File .env.local tidak ditemukan! Harap siapkan sebelum menjalankan.${NC}"
 fi
 
-# Hentikan frontend lama
-echo -e "${YELLOW}Menghentikan kontainer frontend yang lama...${NC}"
-$DOCKER_COMPOSE down
-
-# Build dan jalankan frontend
-echo -e "${GREEN}Membangun dan menjalankan kontainer frontend...${NC}"
+# Build dan jalankan frontend (Zero-downtime redeploy)
+echo -e "${GREEN}Membangun (jika ada perubahan) dan menjalankan kontainer frontend...${NC}"
 $DOCKER_COMPOSE up --build -d
 
 echo -e "${GREEN}=== Frontend Deployment Selesai ===${NC}"
