@@ -127,11 +127,8 @@ export default function LoginPage() {
             <Button type="submit" className="w-full" disabled={isLoading}>
               {isLoading ? "Logging in..." : "Login"}
             </Button>
-            <div className="text-center text-sm">
-              Don&apos;t have an account?{" "}
-              <Link href="/register" className="text-blue-600 hover:text-blue-500">
-                Register
-              </Link>
+            <div className="text-center text-sm text-gray-500">
+              Registrasi akun baru dinonaktifkan
             </div>
           </CardFooter>
         </form>

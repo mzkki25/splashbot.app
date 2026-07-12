@@ -159,10 +159,13 @@ export default function RegisterPage() {
             </div>
 
             {formError && <AuthFormError message={formError} />}
+            <div className="p-3 bg-amber-50 border border-amber-200 text-amber-800 dark:bg-amber-950/20 dark:border-amber-900/50 dark:text-amber-400 rounded-md text-sm text-center">
+              Maaf, registrasi akun baru sedang dinonaktifkan sementara. Silakan login menggunakan akun yang sudah ada.
+            </div>
           </CardContent>
           <CardFooter className="flex flex-col space-y-4">
-            <Button type="submit" className="w-full" disabled={isLoading}>
-              {isLoading ? "Creating account..." : "Register"}
+            <Button type="submit" className="w-full" disabled={true}>
+              Registrasi Dinonaktifkan
             </Button>
             <div className="text-center text-sm">
               Already have an account?{" "}
