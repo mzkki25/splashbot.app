@@ -5,7 +5,7 @@ WORKDIR /app
 # Step 1: Install dependencies
 FROM base AS deps
 COPY package.json package-lock.json* ./
-RUN npm ci
+RUN npm ci --legacy-peer-deps
 
 # Step 2: Build the Next.js application
 FROM base AS builder
